@@ -6,7 +6,7 @@ import java.util.Scanner;
                 Scanner scanner = new Scanner(System.in);
                 int validFileCount = 0; // Счётчик корректных файлов
 
-                while(true) {
+                while (true) {
                     System.out.println("Введите путь к файлу");
                     String path = scanner.nextLine();
 
