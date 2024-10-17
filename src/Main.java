@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -12,7 +13,7 @@ public class Main {
             System.out.println("Введите путь к файлу:");
             String path = scanner.nextLine();
 
-                       File file = new File(path);
+            File file = new File(path);
             if (!file.exists() || file.isDirectory()) {
                 System.out.println("Указанный путь не существует или это папка. Попробуйте снова.");
                 continue;
@@ -48,8 +49,8 @@ public class Main {
             System.out.println("Общее количество запросов: " + totalRequests);
             System.out.println("Количество запросов от Googlebot: " + googlebotCount);
             System.out.println("Количество запросов от YandexBot: " + yandexbotCount);
+            System.out.println("Количество используемых ОС в %: " +  statistics.getOSStatistics());
         }
 
     }
 }
-
