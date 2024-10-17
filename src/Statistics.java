@@ -22,6 +22,7 @@ public class Statistics {
     public void addEntry(LogEntry entry) {
         totalTraffic += entry.getDataSize();
 
+
         // Обновляем минимальное и максимальное время
         if (entry.getDateTime().isBefore(minTime)) {
             minTime = entry.getDateTime();
@@ -37,35 +38,32 @@ public class Statistics {
         }
 
         // Подсчитываем операционные системы
-        String os = entry.getUserAgent().getOperatingSystem(); // Предполагаем, что метод getOperatingSystem() существует в классе UserAgent
+        String os = entry.getUserAgent().getOperatingSystem();
         osFrequency.put(os, osFrequency.getOrDefault(os, 0) + 1);
     }
 
-    public double getTrafficRate() {
-        long hoursDifference = minTime.until(maxTime, java.time.temporal.ChronoUnit.HOURS);
-
-        if (hoursDifference <= 0) {
-            return totalTraffic; // Если разница в часах 0 или отрицательная, возвращаем общий трафик
-        }
-
-        return (double) totalTraffic / hoursDifference;
-    }
-
-    // Метод для получения списка всех существующих страниц
-    public Set<String> getExistingPages() {
-        return existingPages; // Возвращаем HashSet как Set
-    }
-
-    // Метод для получения статистики операционных систем
     public HashMap<String, Double> getOSStatistics() {
         HashMap<String, Double> osStatistics = new HashMap<>();
         int totalOSCount = osFrequency.values().stream().mapToInt(Integer::intValue).sum();
 
         for (Map.Entry<String, Integer> entry : osFrequency.entrySet()) {
-            double percentage = (double) entry.getValue() / totalOSCount * 100; // Процентное соотношение
+            double percentage = (double) entry.getValue() / totalOSCount;
             osStatistics.put(entry.getKey(), percentage);
         }
 
         return osStatistics;
+    }
+    public double getTrafficRate() {
+        long hoursDifference = maxTime.until(minTime, java.time.temporal.ChronoUnit.HOURS);
+
+
+        if (hoursDifference == 0) {
+            return totalTraffic; // Если разница в часах 0 или отрицательная, возвращаем общий трафик
+        }
+
+        return (double) totalTraffic / hoursDifference;
+    }
+    public int getExistingPagesCount() {
+        return existingPages.size();
     }
 }

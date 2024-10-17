@@ -50,6 +50,7 @@ public class Main {
             System.out.println("Количество запросов от Googlebot: " + googlebotCount);
             System.out.println("Количество запросов от YandexBot: " + yandexbotCount);
             System.out.println("Количество используемых ОС в %: " +  statistics.getOSStatistics());
+            System.out.println("Количество существующих страниц сайта: " + statistics.getExistingPagesCount());
         }
 
     }
