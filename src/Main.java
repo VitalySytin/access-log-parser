@@ -34,7 +34,7 @@ public class Main {
                     totalRequests++;
 
                     // Проверяем User-Agent
-                    String userAgentString = entry.getUserAgent().getUserAgentString(); // Или используйте метод для получения User-Agent
+                    String userAgentString = entry.getUserAgent().getUserAgentString();
                     if (userAgentString.contains("Googlebot")) {
                         googlebotCount++;
                     } else if (userAgentString.contains("YandexBot")) {
@@ -49,8 +49,8 @@ public class Main {
             System.out.println("Общее количество запросов: " + totalRequests);
             System.out.println("Количество запросов от Googlebot: " + googlebotCount);
             System.out.println("Количество запросов от YandexBot: " + yandexbotCount);
-            System.out.println("Количество используемых ОС в %: " +  statistics.getOSStatistics());
-            System.out.println("Количество существующих страниц сайта: " + statistics.getExistingPagesCount());
+            System.out.println("Количество используемых браузеров: " +  statistics.getBrowserStatistics());
+            System.out.println("Список несуществующих страниц сайта: " + statistics.getNonExistingPages());
         }
 
     }
