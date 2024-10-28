@@ -91,7 +91,7 @@ public class Statistics {
         long hoursDifference = minTime.until(maxTime, java.time.temporal.ChronoUnit.HOURS);
 
         if (hoursDifference <= 0) {
-            return totalTraffic; // Если разница в часах 0 или отрицательная, возвращаем общий трафик
+            return totalTraffic; // Если разница в часах 0 или отрицательная,возвращаем общий трафик
         }
 
         return (double) totalTraffic / hoursDifference;
