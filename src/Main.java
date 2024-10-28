@@ -45,12 +45,15 @@ public class Main {
                 System.err.println("Ошибка при чтении файла: " + e.getMessage());
             }
 
-            System.out.println("Средний объем трафика за час: " + statistics.getTrafficRate());
+            System.out.println("Средний объем трафика за час: " + statistics.getTrafficRate() * -1);
             System.out.println("Общее количество запросов: " + totalRequests);
             System.out.println("Количество запросов от Googlebot: " + googlebotCount);
             System.out.println("Количество запросов от YandexBot: " + yandexbotCount);
             System.out.println("Количество используемых браузеров: " +  statistics.getBrowserStatistics());
             System.out.println("Список несуществующих страниц сайта: " + statistics.getNonExistingPages());
+            System.out.println("Cреднее количество посещений за час.: " + statistics.averageVisitsPerHour() *-1);
+            System.out.println("Cреднее количество ошибочных запросов за час: " + statistics.averageErrorRequestsPerHour());
+           System.out.println("Cреднее количество посещений на уникального пользователя (по IP): " + statistics.averageVisitsPerUniqueUser() * -1);
         }
 
     }
