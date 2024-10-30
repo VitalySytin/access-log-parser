@@ -14,6 +14,9 @@ public class Statistics {
     private long startTime; // Время начала в миллисекундах
     private long endTime;
     private int errorRequests;
+    private Map<Integer, Integer> visitsPerSecond; // Хранит количество посещений за каждую секунду
+    private HashSet<String> referers; // Хранит уникальные домены рефереров
+    private final String BOT_IDENTIFIER = "bot"; // Идентификатор для определения ботов
 
     public Statistics() {
         this.totalTraffic = 0;
@@ -48,7 +51,8 @@ public class Statistics {
             nonExistingPages.add(entry.getRequestPath());
         }
 
-        if (!userAgent.toLowerCase().contains("bot")) {
+        boolean isBot = userAgent.toLowerCase().contains(BOT_IDENTIFIER);
+        if (!isBot) {
             visitsByIp.put(ipAddress, visitsByIp.getOrDefault(ipAddress, 0) + 1);
 
             // Обновляем время начала и конца
@@ -97,10 +101,6 @@ public class Statistics {
         return (double) totalTraffic / hoursDifference;
     }
 
-    public double averageVisitsPerHour() {
-        long hours = calculateHours();
-        return hours > 0 ? (double) totalTraffic / hours : 0;
-    }
 
     public double averageErrorRequestsPerHour() {
         long hours = calculateHours();
@@ -114,8 +114,40 @@ public class Statistics {
 
         return minTime.until(maxTime, java.time.temporal.ChronoUnit.HOURS);
     }
-    public double averageVisitsPerUniqueUser() {
-        int uniqueUsers = visitsByIp.size(); // Получаем количество уникальных пользователей
-        return uniqueUsers > 0 ? (double) totalTraffic / uniqueUsers : 0; // Возвращаем среднее количество посещений на уникального пользователя
+    public double averageVisitsPerHour() {
+        long hours = calculateHours();
+        int realUserVisits = totalTraffic - errorRequests; // Учитываем только реальные посещения
+        return hours > 0 ? (double) realUserVisits / hours : 0; // Среднее количество посещений в час
+    }
+
+    public double averageVisitsPerUniqueUser () {
+        int realUserVisits = visitsByIp.size(); // Получаем количество уникальных пользователей
+        return realUserVisits > 0 ? (double) totalTraffic / realUserVisits : 0; // Возвращаем среднее количество посещений на уникального пользователя
+    }
+
+
+
+    public int getTotalTraffic() {
+        return totalTraffic;
+    }
+
+    public LocalDateTime getMinTime() {
+        return minTime;
+    }
+
+    public LocalDateTime getMaxTime() {
+        return maxTime;
+    }
+
+    public int getErrorRequests() {
+        return errorRequests;
+    }
+
+    public Map<Integer, Integer> getVisitsPerSecond() {
+        return visitsPerSecond;
+    }
+
+    public Map<String, Integer> getVisitsByIp() {
+        return visitsByIp;
     }
 }
