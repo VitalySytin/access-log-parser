@@ -28,11 +28,13 @@ public class Statistics {
         this.visitsByIp = new HashMap<>();
         this.startTime = Long.MAX_VALUE; // Инициализируем максимальным значением
         this.endTime = Long.MIN_VALUE;    // Инициализируем минимальным значением
+        this.visitsPerSecond = new HashMap<>(); // Инициализируем для хранения посещений по секундам
+        this.referers = new HashSet<>(); // Инициализируем для хранения рефереров
     }
 
     public void addEntry(LogEntry entry) {
         totalTraffic += entry.getDataSize();
-        String userAgent = String.valueOf(entry.getUserAgent());
+        String userAgentString = entry.getUserAgent().getUserAgentString();
         String ipAddress = entry.getIpAddress();
         String responseCode = String.valueOf(entry.getResponseCode());
         long timestamp = entry.getDateTime().toEpochSecond(ZoneOffset.UTC); // Получаем временную метку
@@ -51,8 +53,7 @@ public class Statistics {
             nonExistingPages.add(entry.getRequestPath());
         }
 
-        boolean isBot = userAgent.toLowerCase().contains(BOT_IDENTIFIER);
-        if (!isBot) {
+        if (!userAgentString.toLowerCase().contains(BOT_IDENTIFIER)) {
             visitsByIp.put(ipAddress, visitsByIp.getOrDefault(ipAddress, 0) + 1);
 
             // Обновляем время начала и конца
@@ -61,6 +62,16 @@ public class Statistics {
             }
             if (timestamp > endTime) {
                 endTime = timestamp;
+            }
+            // Увеличиваем количество посещений в текущую секунду
+            visitsPerSecond.put((int) (timestamp), visitsPerSecond.getOrDefault((int) (timestamp), 0) + 1);
+
+            // Обрабатываем рефереры
+            if (entry.getReferer() != null && !entry.getReferer().isEmpty()) {
+                String domain = getDomainFromReferer(entry.getReferer());
+                if (domain != null) {
+                    referers.add(domain);
+                }
             }
         }
 
@@ -72,6 +83,22 @@ public class Statistics {
         // Подсчитываем браузеры
         String browser = entry.getUserAgent().getBrowser();
         browserFrequency.put(browser, browserFrequency.getOrDefault(browser, 0) + 1);
+    }
+    public int getPeakVisitsPerSecond() {
+        return visitsPerSecond.values().stream().mapToInt(Integer::intValue).max().orElse(0);
+    }
+
+    // Метод для получения списка рефереров
+    public HashSet<String> getReferers() {
+        return referers;
+    }
+
+    // Метод для расчёта максимальной посещаемости одним пользователем
+    public int getMaxVisitsPerUser () {
+        return visitsByIp.values().stream()
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
     }
 
     public HashSet<String> getNonExistingPages() {
@@ -123,6 +150,19 @@ public class Statistics {
     public double averageVisitsPerUniqueUser () {
         int realUserVisits = visitsByIp.size(); // Получаем количество уникальных пользователей
         return realUserVisits > 0 ? (double) totalTraffic / realUserVisits : 0; // Возвращаем среднее количество посещений на уникального пользователя
+    }
+
+    private String getDomainFromReferer(String referer) {
+        try {
+            // Извлекаем домен из реферера
+            String[] parts = referer.split("/");
+            if (parts.length > 2) {
+                return parts[2]; // Возвращаем домен
+            }
+        } catch (Exception e) {
+            // Игнорируем исключения
+        }
+        return null; // Если домен не найден
     }
 
 

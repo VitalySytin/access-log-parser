@@ -54,7 +54,10 @@ public class Main {
             System.out.println("Cреднее количество посещений за час.: " + statistics.averageVisitsPerHour() *-1);
             System.out.println("Cреднее количество ошибочных запросов за час: " + statistics.averageErrorRequestsPerHour());
            System.out.println("Cреднее количество посещений на уникального пользователя (по IP): " + statistics.averageVisitsPerUniqueUser() * -1);
-            //System.out.println("Пиковая посещаемость сайта: " + statistics.calculateHoursBetween() * -1);
+            System.out.println("Максимальное количество посещений за одну секунду: " + statistics.getPeakVisitsPerSecond());
+            System.out.println("Список уникальных доменов рефереров, которые ссылаются на текущий сайт.: " + statistics.getReferers());
+            System.out.println("Максимальное количество посещений одним пользователем: " + statistics.getMaxVisitsPerUser());
+
 
         }
 
